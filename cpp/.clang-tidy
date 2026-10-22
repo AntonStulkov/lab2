@@ -1,0 +1,11 @@
+---
+Checks: 'bugprone-*,clang-analyzer-*,cert-*,security-*'
+HeaderFilterRegex: ''
+FormatStyle: none
+ExtraArgs:
+  - '-Xclang'
+  - '-analyzer-config'
+  - '-Xclang'
+  - 'notes-as-warnings=false'
+  - '-Xclang'
+  - '-analyzer-output=text'
