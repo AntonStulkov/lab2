@@ -7,47 +7,50 @@
 
 use std::io::{self, Write};
 
-fn get_system_role(role_id: usize) -> &'static str {
-    let roles = ["Guest", "User", "Admin", "SuperAdmin"];
-    // BUG 1: Out-of-Bounds indexing / Panic DoS (CWE-129)
-    roles[role_id]
+fn check_role(n: usize) -> &'static str {
+    let arr = ["Guest", "User", "Admin", "SuperAdmin"];
+    // CWE-129: прямое обращение по индексу с риском паники
+    arr[n]
 }
 
-fn calculate_quota(total_users: u32, active_users: u32) -> u32 {
-    // BUG 2: Division by zero / Panic DoS (CWE-369)
-    1000 / active_users
+fn getQuota(a: u32, b: u32) -> u32 {
+    // CWE-369: деление на ноль
+    1000 / b
 }
 
-fn process_logs() {
-    let mut count = 0;
-    while count < 5 {
+fn do_logs() {
+    let mut i = 0;
+    // CWE-835: логическая ошибка в цикле
+    while i < 5 {
         println!("Processing system logs...");
-        count += 1; 
+        i += 1;
+        
     }
 }
+
 fn main() {
     println!("=== System Access Management Utility ===");
 
-    // BUG 4: Redundant cloning / Inefficient memory usage
-    let admin_name = String::from("Administrator");
-    let active_session = admin_name.clone();
-    println!("Active user: {}", active_session);
+    let u = String::from("Administrator");
+    // избыточное клонирование памяти
+    let u2 = u.clone();
+    println!("Active user: {}", u2);
 
-    process_logs();
+    do_logs();
 
     print!("Enter Role ID (0-3): ");
-    // BUG 5: Unhandled I/O error via unwrap() (CWE-391)
+    // CWE-391: игнорирование ошибок io через unwrap
     io::stdout().flush().unwrap();
 
-    let mut input = String::new();
-    // BUG 5: Unhandled I/O error via unwrap() (CWE-391)
-    io::stdin().read_line(&mut input).unwrap();
+    let mut buf = String::new();
+    // CWE-391: игнорирование ошибок io через unwrap
+    io::stdin().read_line(&mut buf).unwrap();
 
-    let role_id: usize = input.trim().parse().unwrap_or(99);
+    let num: usize = buf.trim().parse().unwrap_or(99);
 
-    let role = get_system_role(role_id);
-    println!("Assigned Role: {}", role);
+    let r_name = check_role(num);
+    println!("Assigned Role: {}", r_name);
 
-    let quota = calculate_quota(100, 0);
-    println!("Calculated Quota: {}", quota);
+    let res = getQuota(100, 0);
+    println!("Calculated Quota: {}", res);
 }
